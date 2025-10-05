@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { HearingTestResult, AudiogramDataPoint } from '@/lib/types';
 import AudiogramChart from './audiogram-chart';
-import { Play, Square, Ear, Save, RotateCcw } from 'lucide-react';
+import { Play, Square, Ear, Save, RotateCcw, RefreshCw } from 'lucide-react';
 
 const TEST_FREQUENCIES = [125, 250, 500, 1000, 2000, 4000, 8000];
 const STARTING_DB = 0;
@@ -34,7 +34,7 @@ export function HearingTest() {
   useEffect(() => {
     synth.current = new Tone.MonoSynth({
       oscillator: { type: 'sine' },
-      envelope: { attack: 0.01, decay: 0.1, sustain: 1, release: 0.1 },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 1.2, release: 0.1 },
     }).toDestination();
     return () => {
       if (toneTimeout.current) clearTimeout(toneTimeout.current);
@@ -159,14 +159,19 @@ export function HearingTest() {
         )}
         {testState === 'running' && (
           <div className="flex flex-col items-center gap-6 w-full">
-            <p className="text-lg font-medium text-muted-foreground">Testing: {TEST_FREQUENCIES[currentFrequencyIndex]} Hz</p>
+            <p className="text-lg font-medium text-muted-foreground">Testing: {TEST_FREQUENCIES[currentFrequencyIndex]} Hz at {currentDb} dB</p>
             <Progress value={progress} className="w-full" />
-            <div className="flex gap-4">
-              <Button size="lg" className="px-10 py-8" onClick={() => nextStep(true)}>
-                <Ear className="mr-2 h-6 w-6" /> I Hear It
-              </Button>
-               <Button size="lg" variant="outline" className="px-10 py-8" onClick={() => nextStep(false)}>
-                I Don't Hear It
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex gap-4">
+                <Button size="lg" className="px-10 py-8" onClick={() => nextStep(true)}>
+                  <Ear className="mr-2 h-6 w-6" /> I Hear It
+                </Button>
+                <Button size="lg" variant="outline" className="px-10 py-8" onClick={() => nextStep(false)}>
+                  I Don't Hear It
+                </Button>
+              </div>
+              <Button variant="outline" onClick={() => playTone(TEST_FREQUENCIES[currentFrequencyIndex], currentDb)}>
+                <RefreshCw className="mr-2 h-4 w-4" /> Play Again
               </Button>
             </div>
             <Button variant="destructive" onClick={stopTest} className="mt-4">
