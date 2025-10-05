@@ -11,11 +11,11 @@ import AudiogramChart from './audiogram-chart';
 import { Play, Square, Ear, Save, RotateCcw } from 'lucide-react';
 
 const TEST_FREQUENCIES = [125, 250, 500, 1000, 2000, 4000, 8000];
-const STARTING_DB = 30;
+const STARTING_DB = 0;
 const MIN_DB = -10;
-const MAX_DB = 100;
-const DB_STEP_DOWN = 10;
-const DB_STEP_UP = 5;
+const MAX_DB = 80;
+const DB_STEP_DOWN = 5;
+const DB_STEP_UP = 10;
 const HEARING_RESULTS_KEY = 'audioclear_hearing_results';
 
 type TestState = 'idle' | 'running' | 'finished';
@@ -25,8 +25,7 @@ export function HearingTest() {
   const [currentFrequencyIndex, setCurrentFrequencyIndex] = useState(0);
   const [currentDb, setCurrentDb] = useState(STARTING_DB);
   const [results, setResults] = useState<AudiogramDataPoint[]>([]);
-  const [heardCount, setHeardCount] = useState(0);
-  const [notHeardCount, setNotHeardCount] = useState(0);
+  const [heardOnce, setHeardOnce] = useState(false);
 
   const synth = useRef<Tone.MonoSynth | null>(null);
   const toneTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -49,7 +48,8 @@ export function HearingTest() {
     if (Tone.context.state !== 'running') {
       Tone.context.resume();
     }
-    const volume = db - 70; // This is a non-linear, simplified mapping
+    // Simple mapping of dB HL to volume. This is not perceptually linear.
+    const volume = db - 70;
     synth.current.volume.value = volume;
     synth.current.frequency.value = freq;
     synth.current.triggerAttack(freq);
@@ -63,8 +63,7 @@ export function HearingTest() {
       setResults([]);
       setCurrentFrequencyIndex(0);
       setCurrentDb(STARTING_DB);
-      setHeardCount(0);
-      setNotHeardCount(0);
+      setHeardOnce(false);
       setTimeout(() => playTone(TEST_FREQUENCIES[0], STARTING_DB), 500);
     } catch (e) {
       toast({ variant: 'destructive', title: 'Audio Error', description: 'Could not start audio context.' });
@@ -75,46 +74,54 @@ export function HearingTest() {
     synth.current?.triggerRelease();
     setTestState('idle');
   };
+  
+  const moveToNextFrequency = (threshold: number) => {
+    const newResult = { frequency: TEST_FREQUENCIES[currentFrequencyIndex], decibel: Math.max(MIN_DB, Math.min(MAX_DB, threshold)) };
+    const updatedResults = [...results, newResult].sort((a, b) => a.frequency - b.frequency);
+    setResults(updatedResults);
+
+    if (currentFrequencyIndex < TEST_FREQUENCIES.length - 1) {
+      setCurrentFrequencyIndex(prev => prev + 1);
+      setCurrentDb(STARTING_DB);
+      setHeardOnce(false);
+      setTimeout(() => playTone(TEST_FREQUENCIES[currentFrequencyIndex + 1], STARTING_DB), 500);
+    } else {
+      setTestState('finished');
+      toast({ title: 'Test Complete!', description: 'Your hearing test results are ready.' });
+    }
+  };
+
 
   const nextStep = (heard: boolean) => {
     if (testState !== 'running') return;
     synth.current?.triggerRelease();
 
-    let newDb = currentDb;
-    let nextHeardCount = heardCount;
-    let nextNotHeardCount = notHeardCount;
-
     if (heard) {
-      newDb -= DB_STEP_DOWN;
-      nextHeardCount++;
-    } else {
-      newDb += DB_STEP_UP;
-      nextNotHeardCount++;
-    }
-    
-    setCurrentDb(newDb);
-    setHeardCount(nextHeardCount);
-    setNotHeardCount(nextNotHeardCount);
-
-    // Simplified threshold detection: two ascents or two descents
-    if (nextHeardCount >= 2 || nextNotHeardCount >= 3) {
-      const threshold = heard ? currentDb + DB_STEP_UP : currentDb;
-      const newResult = { frequency: TEST_FREQUENCIES[currentFrequencyIndex], decibel: Math.max(MIN_DB, Math.min(MAX_DB, threshold)) };
-      const updatedResults = [...results, newResult].sort((a,b) => a.frequency - b.frequency);
-      setResults(updatedResults);
-      
-      if (currentFrequencyIndex < TEST_FREQUENCIES.length - 1) {
-        setCurrentFrequencyIndex(prev => prev + 1);
-        setCurrentDb(STARTING_DB);
-        setHeardCount(0);
-        setNotHeardCount(0);
-        setTimeout(() => playTone(TEST_FREQUENCIES[currentFrequencyIndex + 1], STARTING_DB), 500);
+      if (heardOnce) {
+        // Second time hearing it, threshold found.
+        moveToNextFrequency(currentDb);
       } else {
-        setTestState('finished');
-        toast({ title: 'Test Complete!', description: 'Your hearing test results are ready.' });
+        // First time hearing it, go down and confirm.
+        setHeardOnce(true);
+        const newDb = currentDb - DB_STEP_DOWN;
+        setCurrentDb(newDb);
+        setTimeout(() => playTone(TEST_FREQUENCIES[currentFrequencyIndex], newDb), 500);
       }
-    } else {
-      setTimeout(() => playTone(TEST_FREQUENCIES[currentFrequencyIndex], newDb), 500);
+    } else { // Didn't hear
+      if (heardOnce) {
+        // Was descending, but missed it. Threshold is the previous level.
+        moveToNextFrequency(currentDb + DB_STEP_DOWN);
+      } else {
+        // Still ascending.
+        const newDb = currentDb + DB_STEP_UP;
+        if (newDb > MAX_DB) {
+          // Can't hear even at max volume, record max and move on.
+          moveToNextFrequency(MAX_DB);
+        } else {
+          setCurrentDb(newDb);
+          setTimeout(() => playTone(TEST_FREQUENCIES[currentFrequencyIndex], newDb), 500);
+        }
+      }
     }
   };
   
