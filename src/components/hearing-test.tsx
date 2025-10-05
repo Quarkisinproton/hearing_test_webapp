@@ -34,7 +34,7 @@ export function HearingTest() {
   useEffect(() => {
     synth.current = new Tone.MonoSynth({
       oscillator: { type: 'sine' },
-      envelope: { attack: 0.01, decay: 0.1, sustain: 1.2, release: 0.1 },
+      envelope: { attack: 0.01, decay: 0.1, sustain: 0.9, release: 0.1 },
     }).toDestination();
     return () => {
       if (toneTimeout.current) clearTimeout(toneTimeout.current);
