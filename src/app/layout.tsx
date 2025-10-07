@@ -40,7 +40,24 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased">{children}<Toaster /></body>
+      <body className="font-body antialiased">
+        {children}
+        <Toaster />
+        {/* Service Worker registration: minimal, network-only (no caching) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(function (reg) { console.log('ServiceWorker registered', reg); })
+                    .catch(function (err) { console.warn('ServiceWorker registration failed', err); });
+                });
+              }
+            `,
+          }}
+        />
+      </body>
     </html>
   );
 }
