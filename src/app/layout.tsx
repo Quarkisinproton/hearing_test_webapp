@@ -1,11 +1,32 @@
-import type {Metadata} from 'next';
+import type {Metadata, Viewport} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
+const APP_NAME = "AudioClear";
+const APP_DESCRIPTION = "An app for hearing tests and voice denoising.";
+
 export const metadata: Metadata = {
-  title: 'AudioClear',
-  description: 'An app for hearing tests and voice denoising.',
+  applicationName: APP_NAME,
+  title: {
+    default: APP_NAME,
+    template: `%s | ${APP_NAME}`,
+  },
+  description: APP_DESCRIPTION,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_NAME,
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
+
+export const viewport: Viewport = {
+  themeColor: "#FFFFFF",
+};
+
 
 export default function RootLayout({
   children,
