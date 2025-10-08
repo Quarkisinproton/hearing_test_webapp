@@ -1,6 +1,7 @@
 import type {Metadata, Viewport} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
+import PWAInstallButton from '@/components/PWAInstallButton';
 
 const APP_NAME = "AudioClear";
 const APP_DESCRIPTION = "An app for hearing tests and voice denoising.";
@@ -43,6 +44,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         {children}
         <Toaster />
+        <PWAInstallButton />
         {/* Service Worker registration: minimal, network-only (no caching) */}
         <script
           dangerouslySetInnerHTML={{

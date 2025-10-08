@@ -2,117 +2,58 @@
   "name": "AudioClear",
   "short_name": "AudioClear",
   "description": "An app for hearing tests and voice denoising.",
-  "id": "https://hearing-test-webapp.vercel.app/",
-  "start_url": "/?source=pwa",
-  "scope": "/",
+  "start_url": "/",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "tabbed",
-    "window-controls-overlay",
-    "fullscreen",
-    "minimal-ui"
-  ],
-  "orientation": "portrait",
-  "dir": "ltr",
-  "lang": "en-US",
-  "background_color": "#FFFFFF",
-  "theme_color": "#FFFFFF",
-  "categories": ["health", "music", "education"],
-  "shortcuts": [
-    {
-      "name": "Hearing Test",
-      "short_name": "Hearing",
-      "description": "Start a hearing test",
-      "url": "/?source=shortcut_hearing",
-      "icons": [
-        {
-          "src": "/icons/shortcut-hearing.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Voice Denoise",
-      "short_name": "Denoise",
-      "description": "Open voice denoising tool",
-      "url": "/?source=shortcut_denoise",
-      "icons": [
-        {
-          "src": "/icons/shortcut-denoise.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshots/hearing-1.png",
-      "sizes": "640x480",
-      "type": "image/png"
-    },
-    {
-      "src": "/screenshots/denoise-1.png",
-      "sizes": "640x480",
-      "type": "image/png"
-    }
-  ],
+  "background_color": "#ffffff",
+  "theme_color": "#e6f2fb",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "related_applications": [
+      "purpose": "any"
+    },
     {
-      "platform": "play",
-      "id": "com.example.audioclear",
-      "url": "https://play.google.com/store/apps/details?id=com.example.audioclear"
+      "src": "/icons/icon-512-maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
-  "prefer_related_applications": false,
-  "iarc_rating_id": "PENDING",
-  "scope_extensions": [
-    "https://subdomain.hearing-test-webapp.vercel.app/"
-  ],
-  "file_handlers": [
+  "screenshots": [
     {
-      "action": "/open",
-      "accept": {
-        "audio/*": [".wav", ".mp3", ".m4a", ".ogg"]
-      }
+      "src": "/screenshots/hearing-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Hearing test"
+    },
+    {
+      "src": "/screenshots/denoise-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Denoise"
     }
   ],
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "share_target": {
-    "action": "/share",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url",
-      "files": [
-        {
-          "name": "file",
-          "accept": ["audio/*", "image/*"]
-        }
-      ]
+  "shortcuts": [
+    {
+      "name": "Hearing Test",
+      "short_name": "Hearing",
+      "description": "Start the hearing test",
+      "url": "/",
+      "icons": [{ "src": "/icons/shortcut-hearing.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Voice Denoise",
+      "short_name": "Denoise",
+      "description": "Open voice denoise",
+      "url": "/denoise",
+      "icons": [{ "src": "/icons/shortcut-denoise.png", "sizes": "96x96" }]
     }
-  },
-  "edge_side_panel": {
-    "default": "/"
-  }
+  ]
 }
