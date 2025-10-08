@@ -3,6 +3,7 @@
   "short_name": "AudioClear",
   "description": "An app for hearing tests and voice denoising.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#e6f2fb",
@@ -31,13 +32,15 @@
       "src": "/screenshots/hearing-1.png",
       "sizes": "1280x720",
       "type": "image/png",
-      "label": "Hearing test"
+      "label": "Hearing test",
+      "form_factor": "wide"
     },
     {
       "src": "/screenshots/denoise-1.png",
       "sizes": "1280x720",
       "type": "image/png",
-      "label": "Denoise"
+      "label": "Denoise",
+      "form_factor": "wide"
     }
   ],
   "shortcuts": [

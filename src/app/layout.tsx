@@ -1,23 +1,19 @@
 import type {Metadata, Viewport} from 'next';
 import './globals.css';
-import { Toaster } from "@/components/ui/toaster"
 import PWAInstallButton from '@/components/PWAInstallButton';
 
-const APP_NAME = "AudioClear";
-const APP_DESCRIPTION = "An app for hearing tests and voice denoising.";
-
 export const metadata: Metadata = {
-  applicationName: APP_NAME,
+  applicationName: "AudioClear",
   title: {
-    default: APP_NAME,
-    template: `%s | ${APP_NAME}`,
+    default: "AudioClear",
+    template: `%s | AudioClear`,
   },
-  description: APP_DESCRIPTION,
+  description: "An app for hearing tests and voice denoising.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: APP_NAME,
+    title: "AudioClear",
   },
   formatDetection: {
     telephone: false,
@@ -40,10 +36,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#e6f2fb" />
       </head>
       <body className="font-body antialiased">
         {children}
-        <Toaster />
         <PWAInstallButton />
         {/* Service Worker registration: minimal, network-only (no caching) */}
         <script
