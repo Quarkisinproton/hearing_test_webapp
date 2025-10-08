@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
 
 const pwaConfig = withPWA({
   dest: 'public',
-  register: true,
+  register: false, // disable automatic client registration to avoid conflicts with custom sw.js
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development', // only disable in development
 });
