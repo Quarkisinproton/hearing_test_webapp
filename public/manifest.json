@@ -32,8 +32,7 @@
       "src": "/screenshots/hearing-1.png",
       "sizes": "1280x720",
       "type": "image/png",
-      "label": "Hearing test",
-      "form_factor": "wide"
+      "label": "Hearing test"
     },
     {
       "src": "/screenshots/denoise-1.png",
