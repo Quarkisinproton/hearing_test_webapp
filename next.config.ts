@@ -35,9 +35,11 @@ const nextConfig: NextConfig = {
 
 const pwaConfig = withPWA({
   dest: 'public',
-  register: false, // disable automatic client registration to avoid conflicts with custom sw.js
+  register: false, // keep registration off; we'll use our custom public/sw.js
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development', // only disable in development
+  // Disable next-pwa completely so it doesn't generate a Workbox sw.js in production.
+  // We provide a small, safe custom service worker at public/sw.js instead.
+  disable: true,
 });
 
 export default pwaConfig(nextConfig);
