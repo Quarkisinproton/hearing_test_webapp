@@ -1,5 +1,3 @@
-# Firebase Studio
+# Forke of https://github.com/Abhiramdadi17
 
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+*To get started, take a look at src/app/page.tsx.*
